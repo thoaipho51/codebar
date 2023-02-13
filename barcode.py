@@ -1,17 +1,9 @@
 import time
-import cv2
 import numpy as np
-from imutils.video import VideoStream
 from pyzbar.pyzbar import decode
 import streamlit as st
-
-# img = cv2.imread('img/qrcode_test.png')
-# barcode_demo = cv2.imread('img/barcode_demo.png')
-
-f_with = 640
-f_height = 480
-
-# video = VideoStream(src=0, width=f_with, height=f_height).start()
+from PIL import Image
+import io
 
 # camera = True
 list_code = []
@@ -48,16 +40,15 @@ with open("products.txt", "r", encoding='utf-8') as file:
 
 img = st.camera_input("Take a picture")
 if img is not None:
-    # To read image file buffer with OpenCV:
+    
+    # decode hình ảnh sang chuỗi nhị phân để xử lý
     bytes_data = img.getvalue()
-    cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
+    img = Image.open(io.BytesIO(bytes_data))
 
-    for code in decode(cv2_img):
+    for code in decode(img):
         if code.data.decode('utf-8') not in list_code:
-            # name = input('Nhập tên sản phẩm:')
             name = st.text_input("Nhập tên sản phẩm")
             price = st.text_input("Nhập giá sản phẩm")
-            # price = input('Giá:')
             if st.button("Nhập Dữ Liệu"):
                 product = {
                     'code': code.data.decode('utf-8'),
@@ -65,9 +56,8 @@ if img is not None:
                     'price': price
                 }
                 st.write(f'Nhập code : {code.data.decode("utf-8")} Thành Công ! - {name}')
-                # print(f'Nhập code : {code.data.decode("utf-8")} Thành Công ! - {name}')
                 write_f(product)
-                time.sleep(3)
+
         else:
             st.write(f'Mã Code : {code.data.decode("utf-8")}')
             with open("products.txt", "r", encoding='utf-8') as file:
@@ -78,16 +68,4 @@ if img is not None:
                     price = line.split(' - ')[2]
                     if barcode == code.data.decode('utf-8'):
                         st.write(f"Tên: {name} Giá: {price}")
-            time.sleep(3)
-        st.write("Ảnh không rõ")
         
-
-
-
-# cv2.imshow('Testing_scan_code', frame)
-# key = cv2.waitKey(1)
-# if key == ord("q"):
-#     break
-
-# cv2.destroyAllWindows()
-# video.stop()
