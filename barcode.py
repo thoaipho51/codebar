@@ -6,7 +6,7 @@ from pyzbar.pyzbar import decode
 import streamlit as st
 
 # img = cv2.imread('img/qrcode_test.png')
-barcode_demo = cv2.imread('img/barcode_demo.png')
+# barcode_demo = cv2.imread('img/barcode_demo.png')
 
 f_with = 640
 f_height = 480
