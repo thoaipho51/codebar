@@ -1,0 +1,2 @@
+[server]
+system_dependencies = ["libzbar0"]
